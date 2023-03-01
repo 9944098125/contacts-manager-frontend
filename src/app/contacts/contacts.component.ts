@@ -1,5 +1,5 @@
 import { ContactsService } from './../contacts.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
 declare var window: any;
 
@@ -16,14 +16,37 @@ export class ContactsComponent implements OnInit {
   phone: any;
   selectedFile: any;
   image: any;
+  contact: any = {};
 
   isCreatingContact = false;
 
   @ViewChild('myForm') myForm: any;
+  @ViewChild('imageInput') imageInput: any;
   constructor(private contactsService: ContactsService) {}
 
   showModal() {
+    this.formModal = new window.bootstrap.Modal(
+      document.getElementById('createModal')
+    );
+    this.myForm.resetForm();
     this.formModal.show();
+  }
+
+  showEditModal(id: string) {
+    this.formModal = new window.bootstrap.Modal(
+      document.getElementById('editModal')
+    );
+    this.formModal.show();
+    this.imageInput.nativeElement.value = '';
+    this.contactsService.getContactById(id).subscribe(
+      (contact) => {
+        this.contact = contact;
+        // console.log(contact);
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
   }
 
   closeModal() {
@@ -31,9 +54,6 @@ export class ContactsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.formModal = new window.bootstrap.Modal(
-      document.getElementById('createEditModal')
-    );
     this.contactsService.getContacts().subscribe((contacts) => {
       console.log(contacts);
       this.contacts = contacts;
@@ -100,6 +120,34 @@ export class ContactsComponent implements OnInit {
       );
       this.isCreatingContact = false;
     }
+    this.myForm.resetForm();
+  }
+
+  updateContact(id: string) {
+    const body = {
+      name: this.name,
+      email: this.email,
+      phone: this.phone,
+      image: this.image,
+    };
+    this.contactsService.editContact(id, body).subscribe(
+      (res) => {
+        this.contact = res;
+        // console.log(res);
+        this.formModal.hide();
+        this.contactsService.getContacts().subscribe(
+          (updatedList) => {
+            this.contacts = updatedList;
+          },
+          (err) => {
+            console.log(err);
+          }
+        );
+      },
+      (err) => {
+        console.log(err);
+      }
+    );
     this.myForm.resetForm();
   }
 }

@@ -13,6 +13,10 @@ export class ContactsService implements OnInit {
     return this.weReqService.get('contacts');
   }
 
+  getContactById(id: string) {
+    return this.weReqService.getById(`contacts/${id}`);
+  }
+
   addContact(newContact: object) {
     return this.weReqService.post('contacts/create-contact', newContact);
   }

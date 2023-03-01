@@ -1,7 +1,8 @@
-<div class="container">
+<div class="whole-container">
   <table class="list-container">
     <thead>
       <tr class="headings-container">
+        <th class="head">SLNO'</th>
         <th class="head">Name</th>
         <th class="head">Email</th>
         <th class="head">Phone Number</th>
@@ -9,14 +10,15 @@
       </tr>
     </thead>
     <tbody>
-      <tr class="each-row" *ngFor="let eachContact of contacts">
+      <tr class="each-row" *ngFor="let eachContact of contacts; let i = index">
+        <td class="each-item">{{ i + 1 }}.</td>
         <td class="each-item">{{ eachContact.name }}</td>
         <td class="each-item">{{ eachContact.email }}</td>
         <td class="each-item">{{ eachContact.phoneNo }}</td>
         <td class="each-item">
           <img src="{{ eachContact.image }}" alt="" class="image" />
         </td>
-        <td class="action-item">
+        <td class="action-item" (click)="showEditModal(eachContact._id)">
           <i class="fa-solid fa-pencil"></i>
         </td>
         <td class="action-item" (click)="deleteContact(eachContact._id)">
@@ -30,7 +32,7 @@
 
 <div
   class="modal fade"
-  id="createEditModal"
+  id="createModal"
   tabindex="-1"
   aria-labelledby="exampleModalLabel"
   aria-hidden="true"
@@ -77,6 +79,82 @@
               class="fields"
               type="file"
               name="selectedFile"
+              (change)="onFileSelected($event)"
+            />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+              (click)="closeModal()"
+            >
+              Close
+            </button>
+            <button type="submit" class="btn btn-dark">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div
+  class="modal fade"
+  id="editModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+  data-bs-backdrop="static"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Update Contact</h1>
+      </div>
+      <div class="modal-body" *ngIf="contact">
+        <form
+          #myForm="ngForm"
+          (ngSubmit)="updateContact(contact._id)"
+          enctype="multipart/form-data"
+        >
+          <div class="mb-3 d-flex flex-column">
+            <label class="labels">Name</label>
+            <input
+              class="fields"
+              type="'text"
+              name="name"
+              value="{{ contact.name }}"
+              [(ngModel)]="name"
+            />
+          </div>
+          <div class="mb-3 d-flex flex-column">
+            <label class="labels">Email</label>
+            <input
+              class="fields"
+              type="'text"
+              name="email"
+              value="{{ contact.email }}"
+              [(ngModel)]="email"
+            />
+          </div>
+          <div class="mb-3 d-flex flex-column">
+            <label class="labels">Phone Number</label>
+            <input
+              class="fields"
+              type="'text"
+              name="phone"
+              value="{{ contact.phoneNo }}"
+              [(ngModel)]="phone"
+            />
+          </div>
+          <div class="mb-3 d-flex flex-column">
+            <label class="labels">Profile Image</label>
+            <input
+              class="fields"
+              type="file"
+              name="selectedFile"
+              #imageInput
               (change)="onFileSelected($event)"
             />
           </div>

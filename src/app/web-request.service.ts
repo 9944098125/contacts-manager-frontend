@@ -15,6 +15,10 @@ export class WebRequestService {
     return this.http.get(`${this.BASE_URL}/${url}`);
   }
 
+  getById(url: string) {
+    return this.http.get(`${this.BASE_URL}/${url}`);
+  }
+
   post(url: string, payload: Object) {
     return this.http.post(`${this.BASE_URL}/${url}`, payload);
   }
